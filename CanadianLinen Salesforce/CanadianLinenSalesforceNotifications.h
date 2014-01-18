@@ -1,0 +1,20 @@
+//
+//  CanadianLinenSalesforceNotifications.h
+//  CanadianLinen Salesforce
+//
+//  Created by Aaron C Wright on 12/11/12.
+//  Copyright (c) 2012 Aaron C Wright. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+# define CanadianLinenSalesforcePresentationsDidInitializeNotification @"kCanadianLinenSalesforcePresentationsDidInitializeNotification"
+# define CanadianLinenSalesforcePresentationChangedNotification @"kCanadianLinenSalesforcePresentationChangedNotification"
+# define CanadianLinenSalesforceDocumentsDidInitializeNotification @"kCanadianLinenSalesforceDocumentsDidInitializeNotification"
+# define CanadianLinenSalesforceDocumentChangedNotification @"kCanadianLinenSalesforceDocumentChangedNotification"
+# define CanadianLinenSalesforceSavesDidInitializeNotification @"kCanadianLinenSalesforceSavesDidInitializeNotification"
+# define CanadianLinenSalesforceSavesDidChangeNotification @"kCanadianLinenSalesforceSavesDidChangeNotification"
+# define CanadianLinenSalesforceSaveChangedNotification @"kCanadianLinenSalesforceSaveChangedNotification"
+# define CanadianLinenSalesforceDidToggleEditNotification @"kCanadianLinenSalesforceDidToggleEditNotification"
+# define CanadianLinenSalesforceDidRequestEditSaveNotification @"kCanadianLinenSalesforceDidRequestEditSaveNotification"
+# define CanadianLinenSalesforceDidRequestEditResetNotification @"kCanadianLinenSalesforceDidRequestEditResetNotification"
