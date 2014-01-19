@@ -45,7 +45,7 @@
     self.navigationBar.topItem.rightBarButtonItem = _activityButton;
     [_activityIndicator startAnimating];
     
-    [[CanadianLinenSalesforcePresentationManager defaultManager] rebuildPresentationCache];
+    [[CanadianLinenSalesforcePresentationManager defaultManager] downloadPresentation];
 }
 
 - (void)reload:(id)sender {

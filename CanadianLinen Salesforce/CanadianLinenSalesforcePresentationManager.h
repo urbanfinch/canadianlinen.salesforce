@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AFNetworking/AFNetworking.h"
 #import "CanadianLinenSalesforceNotifications.h"
 #import "CanadianLinenSalesforcePresentation.h"
 #import "ZipArchive.h"
@@ -19,6 +20,7 @@
 + (CanadianLinenSalesforcePresentationManager *)defaultManager;
 
 - (void)initialize;
+- (void)downloadPresentation;
 - (void)openPresentationURL:(NSURL *)url;
 - (void)rebuildPresentationCache;
 - (NSString *)titleForPresentation;

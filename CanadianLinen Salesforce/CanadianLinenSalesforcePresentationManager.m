@@ -45,28 +45,22 @@ static CanadianLinenSalesforcePresentationManager *_defaultManager = nil;
     NSMutableArray *presentations = [NSMutableArray array];
     
     NSString *cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-
-    NSArray *cachesContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:cachesDirectory error:NULL];
     
-    for (int count = 0; count < (int)[cachesContent count]; count++)
-    {
-        NSString *packagePath = [cachesDirectory stringByAppendingPathComponent:[cachesContent objectAtIndex:count]];
-        NSString *packagePlistPath = [packagePath stringByAppendingPathComponent:@"/package.plist"];
-        NSDictionary *packageDict = [[NSDictionary alloc] initWithContentsOfFile:packagePlistPath];
-        NSArray *packagePresentations = [packageDict valueForKey:@"presentations"];
+    NSString *packagePlistPath = [cachesDirectory stringByAppendingPathComponent:@"/package.plist"];
+    NSDictionary *packageDict = [[NSDictionary alloc] initWithContentsOfFile:packagePlistPath];
+    NSArray *packagePresentations = [packageDict valueForKey:@"presentations"];
+    
+    for (NSDictionary *packagePresentationDict in packagePresentations) {
+        CanadianLinenSalesforcePresentation *presentation = [[CanadianLinenSalesforcePresentation alloc] init];
+        [presentation setTitle:[packagePresentationDict valueForKey:@"title"]];
+        [presentation setFilename:[packagePresentationDict valueForKey:@"filename"]];
         
-        for (NSDictionary *packagePresentationDict in packagePresentations) {
-            CanadianLinenSalesforcePresentation *presentation = [[CanadianLinenSalesforcePresentation alloc] init];
-            [presentation setTitle:[packagePresentationDict valueForKey:@"title"]];
-            [presentation setFilename:[packagePresentationDict valueForKey:@"filename"]];
-            
-            NSURL *baseURL = [NSURL URLWithString:[packagePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-            NSURL *URL = [[baseURL URLByAppendingPathComponent:[presentation filename]] URLByAppendingPathExtension:@"html"];
-
-            [presentation setUrl:URL];
-            
-            [presentations addObject:presentation];
-        }
+        NSURL *baseURL = [NSURL URLWithString:[cachesDirectory stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSURL *URL = [[baseURL URLByAppendingPathComponent:[presentation filename]] URLByAppendingPathExtension:@"html"];
+        
+        [presentation setUrl:URL];
+        
+        [presentations addObject:presentation];
     }
     
     if ([presentations count] > 0) {
@@ -76,6 +70,27 @@ static CanadianLinenSalesforcePresentationManager *_defaultManager = nil;
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:CanadianLinenSalesforcePresentationsDidInitializeNotification object:self];
+}
+
+# pragma mark -
+# pragma mark download
+
+- (void)downloadPresentation {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://ameripride.urbanfinch.com/download/CanadianLinen.appdz"]];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"CanadianLinen.appdz"];
+    operation.outputStream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
+    
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"Successfully downloaded file to %@", path);
+        [self performSelectorOnMainThread:@selector(rebuildPresentationCache) withObject:nil waitUntilDone:NO];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+    
+    [operation start];
 }
 
 # pragma mark -
